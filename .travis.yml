@@ -9,11 +9,11 @@ services:
   - 'docker'
 
 language: 'python'
+python: '2.7'
 
 env:
   matrix:
-    - TOXENV='py27-ansible24'
-    - TOXENV='py27-ansible25'
+    - TOXENV='py27-ansible27'
 
 install:
   - 'pip install tox-travis'
