@@ -1,0 +1,52 @@
+---
+- name: 'SERVICE | Manage systemd services'
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    owner: "{{ item.owner | default('root') }}"
+    group: "{{ item.group | default('root') }}"
+    mode: "{{ item.mode | default('0644') }}"
+  register: 'mongodb_exporter_systemd_updated'
+  loop: "{{ mongodb_exporter_service_systemd|flatten(levels=1) }}"
+  when: is_systemd_managed_system
+
+- name: 'SERVICE | systemd daemon-reload'
+  systemd:
+    name: 'systemd'
+    daemon_reload: true
+  when:
+    - is_systemd_managed_system
+    - mongodb_exporter_systemd_updated.changed
+
+- name: 'SERVICE | enable mongodb-exporter systemd'
+  systemd:
+    name: "{{ mongodb_exporter_service_name }}"
+    enabled: true
+    masked: false
+  when:
+    - is_systemd_managed_system
+    - mongodb_exporter_systemd_updated.changed
+
+- name: 'SERVICE | Manage services with init.d'
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    owner: "{{ item.owner | default('root') }}"
+    group: "{{ item.group | default('root') }}"
+    mode: "{{ item.mode | default('0755') }}"
+  notify: 'HANDLER | Restart mongodb-exporter service'
+  loop: "{{ mongodb_exporter_service_initd|flatten(levels=1) }}"
+  register: 'mongodb_exporter_initd_updated'
+  when:
+    - is_initd_managed_system
+
+- name: 'SERVICE | Manage service state'
+  service:
+    name: "{{ mongodb_exporter_service_name }}"
+    state: "{{ mongodb_exporter_service_state }}"
+    enabled: "{{ mongodb_exporter_service_enabled }}"
+  notify: 'HANDLER | Restart mongodb-exporter service'
+  when:
+    - mongodb_exporter_install_package
+    - is_initd_managed_system
+    - mongodb_exporter_initd_updated.changed

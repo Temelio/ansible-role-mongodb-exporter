@@ -1,0 +1,10 @@
+---
+
+# Path variables
+_mongodb_exporter_os_base_etc_path: '/etc'
+_mongodb_exporter_os_base_initd_path: '/etc/init.d'
+_mongodb_exporter_os_base_systemd_path: '/etc/systemd/system'
+_mongodb_exporter_os_base_tmp_path: '/tmp'
+
+# Service management
+_mongodb_exporter_service_name: 'mongodb-exporter'

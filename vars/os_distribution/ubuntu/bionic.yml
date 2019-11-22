@@ -1,0 +1,6 @@
+---
+
+# Specific Bionic values
+
+_is_initd_managed_system: false
+_is_systemd_managed_system: true

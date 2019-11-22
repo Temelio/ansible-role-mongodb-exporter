@@ -1,0 +1,42 @@
+---
+- name: "INSTALL | create {{ mongodb_exporter_system_group }} group"
+  group:
+    name: "{{ mongodb_exporter_system_group }}"
+    state: 'present'
+
+- name: "INSTALL | create {{ mongodb_exporter_system_user }} user"
+  user:
+    name: "{{ mongodb_exporter_system_user }}"
+    group: "{{ mongodb_exporter_system_group }}"
+    createhome: 'no'
+    shell: '/sbin/nologin'
+    comment: "mongodb-exporter User"
+    state: 'present'
+
+- name: 'INSTALL | create config directory'
+  file:
+    path: "{{ mongodb_exporter_folders_paths.config }}"
+    owner: "{{ mongodb_exporter_system_user }}"
+    group: 'root'
+    mode: '0750'
+    state: 'directory'
+
+- name: 'INSTALL | Install dependencies, if any'
+  package:
+    name: "{{ item.name }}"
+    state: "{{ item.state }}"
+    cache_valid_time: '43200'
+    update_cache: yes
+  when: mongodb_exporter_system_packages |length > 0
+  loop: "{{ mongodb_exporter_system_packages|flatten(levels=1) }}"
+
+- name: 'INSTALL | Download precompiled binary'
+  unarchive:
+    src: "{{ mongodb_exporter_release_url }}"
+    dest: "{{ mongodb_exporter_folders_paths.bin }}"
+    owner: "{{ mongodb_exporter_system_user }}"
+    group: "{{ mongodb_exporter_system_group }}"
+    mode: 0750
+    remote_src: yes
+  when: mongodb_exporter_get_package_from_url
+  notify: 'HANDLER | Restart mongodb-exporter service'
