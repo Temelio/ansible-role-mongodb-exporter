@@ -1,0 +1,20 @@
+---
+
+galaxy_info:
+  author: 'Lise Machetel'
+  description: 'Ansible role to install and configure mongodb-exporter'
+  company: 'Temelio (https://temelio.com)'
+  license: 'MIT'
+  min_ansible_version: '2.7'
+  role_name: 'mongodb-exporter'
+  github_branch: 'master'
+  platforms:
+    - name: 'Ubuntu'
+      versions:
+        - 'trusty'
+        - 'xenial'
+        - 'bionic'
+  galaxy_tags:
+    - 'system'
+    - 'mongo'
+dependencies: []

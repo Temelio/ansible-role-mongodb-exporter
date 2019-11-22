@@ -1,0 +1,6 @@
+---
+
+# Specific Xenial values
+
+_is_initd_managed_system: True
+_is_systemd_managed_system: False

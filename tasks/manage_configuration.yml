@@ -1,0 +1,28 @@
+---
+
+# Tasks about MongoDB-exporter  configuration
+# ==============================================================================
+
+- name: 'CONFIG | Manage configuration file 4 systemd'
+  template:
+    src: "{{ role_path }}/templates/mongodb-exporter.config.j2"
+    dest: "{{ mongodb_exporter_folders_paths.config }}/mongodb-exporter.config"
+    owner: "{{ mongodb_exporter_system_user }}"
+    group: "{{ mongodb_exporter_system_group }}"
+    mode: '0600'
+  when:
+    - mongodb_exporter_env_vars |length > 0
+    - is_systemd_managed_system
+  notify: 'HANDLER | Restart mongodb-exporter service'
+
+- name: 'CONFIG | Manage configuration file 4 init.d'
+  template:
+    src: "{{ role_path }}/templates/mongodb-exporter4initd.config.j2"
+    dest: "{{ mongodb_exporter_folders_paths.config }}/mongodb-exporter.config"
+    owner: "{{ mongodb_exporter_system_user }}"
+    group: "{{ mongodb_exporter_system_group }}"
+    mode: '0600'
+  when:
+    - mongodb_exporter_env_vars |length > 0
+    - is_initd_managed_system
+  notify: 'HANDLER | Restart mongodb-exporter service'

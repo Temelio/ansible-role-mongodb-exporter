@@ -1,0 +1,14 @@
+---
+# Handlers main file for mongodb-exporter role
+
+- name: 'HANDLER | Restart mongodb-exporter service'
+  become: True
+  service:
+    name: "{{ mongodb_exporter_service_name }}"
+    state: 'restarted'
+  when:
+    - mongodb_exporter_service_enabled
+  tags:
+    - 'role::mongodb-exporter'
+    - 'role::mongodb-exporter::install'
+    - 'role::mongodb-exporter::config'

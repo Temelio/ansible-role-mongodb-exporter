@@ -1,0 +1,26 @@
+# {{ ansible_managed }}
+
+{% for var in mongodb_exporter_env_vars %}
+CONFIG=" --web.listen-address={{ mongodb_exporter_web_listen_address }} \
+                --web.telemetry-path={{ mongodb_exporter_web_telemetry_path }} \
+             {% if mongodb_exporter_collect_database %}
+                --collect.database \
+            {% endif %}
+            {% if mongodb_exporter_collect_collection %}
+                --collect.collection \
+            {% endif %}
+            {% if mongodb_exporter_collect_topmetrics %}
+                --collect.topmetrics \
+            {% endif %}
+            {% if mongodb_exporter_collect_indexusage %}
+                --collect.indexusage \
+            {% endif %}
+            {% if mongodb_exporter_mongodb_uri %}
+                --mongodb.uri={{ mongodb_exporter_mongodb_uri }} \
+            {% endif %}
+             --mongodb.max-connections={{ mongodb_exporter_mongodb_max_connections }} \
+                --mongodb.socket-timeout={{ mongodb_exporter_mongodb_socket_timeout }} \
+                --mongodb.sync-timeout={{ mongodb_exporter_mongodb_sync_timeout }} \
+                --mongodb.authentification-database={{ mongodb_exporter_authentification_database }} \
+            "
+{% endfor %}

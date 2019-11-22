@@ -1,0 +1,5 @@
+# {{ ansible_managed }}
+
+{% for var in mongodb_exporter_env_vars %}
+{{ var.name }}={{ var.value }}
+{% endfor %}

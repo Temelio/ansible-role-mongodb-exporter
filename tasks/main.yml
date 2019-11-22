@@ -1,0 +1,37 @@
+---
+# Main tasks file for mongodb-exporter role
+
+- name: 'INIT | Manage variables to use for our target'
+  include_tasks: "{{ role_path }}/tasks/manage_variables.yml"
+  tags:
+    - 'role::mongodb-exporter'
+    - 'role::mongodb-exporter::init'
+    - 'role::mongodb-exporter::install'
+
+- name: 'INSTALL | install package'
+  include_tasks: "{{ role_path }}/tasks/install.yml"
+  when:
+    - mongodb_exporter_get_package_from_url
+    - mongodb_exporter_install_package
+  tags:
+    - 'role::mongodb-exporter'
+    - 'role::mongodb-exporter::init'
+    - 'role::mongodb-exporter::install'
+
+- name: 'CONFIG | Manage configuration tasks'
+  become: True
+  include_tasks: "{{ role_path }}/tasks/manage_configuration.yml"
+  when:
+    - mongodb_exporter_install_package
+  tags:
+    - 'role::mongodb-exporter'
+    - 'role::mongodb-exporter::init'
+    - 'role::mongodb-exporter::install'
+
+- name: 'CONFIG | Manage services'
+  become: True
+  include_tasks: "{{ role_path }}/tasks/manage_services.yml"
+  tags:
+    - 'role::mongodb-exporter'
+    - 'role::mongodb-exporter::init'
+    - 'role::mongodb-exporter::install'
